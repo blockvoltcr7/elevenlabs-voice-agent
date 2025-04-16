@@ -1,0 +1,43 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+After every code change:
+1. always UPDATE or Add a HOW-TO guide in docs/how-to explaining the new feature or change.
+2. always UPDATE or Add a QA doc in qa/ detailing what was changed, if it needs testing, what to test, and a short functional test plan.
+Only include functional testing (no non-functional).
+
+### 📄 HOW-TO Document Rule
+> **Every time new functionality is implemented or existing functionality is changed, a `HOW-TO` guide must be added or updated.**
+
+- Location: Place the document in the `docs/how-to/` directory.
+- Format: Clear, step-by-step format using markdown.
+- Content should include:
+  - **What** the feature/change is.
+  - **Why** it matters.
+  - **How** to use it or reproduce the behavior (screenshots or code snippets preferred).
+  - Any known limitations or edge cases.
+
+**Filename Convention:**  
+Use lowercase, kebab-case naming that reflects the functionality.  
+> Example: `how-to-integrate-voice-ai.md`
+
+---
+
+### 🧪 QA Documentation Rule
+> **Every change must include a QA documentation file stored in the `/qa` directory.**
+
+#### QA doc must include:
+- A clear description of what was changed
+- Whether the change requires testing
+- What **specific functionality** needs to be tested
+- A **concise functional test plan**, covering:
+  - Expected input and output
+  - Success criteria (what means "it works")
+
+**Filename Convention:**  
+Use the branch name or feature identifier.  
+> Example: `qa/voice-session-init.md`
+
+---
