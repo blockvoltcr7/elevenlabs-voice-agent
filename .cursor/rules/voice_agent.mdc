@@ -1,0 +1,110 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Voice Agent Component Rules
+
+Description: Guidelines for implementing the core VoiceAgent component
+Globs: app/components/VoiceAgent.tsx
+
+## Component Structure
+
+The VoiceAgent component should be a client-side component that manages the entire conversation lifecycle with the ElevenLabs API. It should handle:
+
+1. Requesting microphone permissions
+2. Establishing WebSocket connections
+3. Processing audio input/output
+4. Visualizing audio levels
+5. Providing user controls (start/stop/volume)
+6. Displaying conversation transcripts
+
+## Implementation Requirements
+
+### Initialization
+
+```typescript
+// Use this pattern for initializing the conversation
+const startConversation = async () => {
+  try {
+    // Request microphone access first
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+    
+    // For authenticated agents:
+    const response = await fetch('/api/elevenlabs');
+    const data = await response.json();
+    
+    const conv = await Conversation.startSession({
+      signedUrl: data.signedUrl,
+      onMessage: handleMessage,
+      onStatusChange: setStatus,
+      onModeChange: setMode,
+      onError: handleError,
+    });
+    
+    setConversation(conv);
+  } catch (err) {
+    handleError(err);
+  }
+};
+```
+
+### State Management
+
+- Use React useState for component state
+- Implement useEffect for cleanup to prevent memory leaks:
+
+```typescript
+useEffect(() => {
+  return () => {
+    // Cleanup on unmount
+    if (conversation) {
+      conversation.endSession();
+    }
+  };
+}, [conversation]);
+```
+
+### UI Considerations
+
+- Provide clear visual indicators for:
+  - Connection status (connecting/connected/disconnected)
+  - Agent mode (listening/speaking)
+  - Audio levels (input/output)
+  - Error states
+
+- Implement accessible controls:
+  - Start/stop conversation
+  - Volume adjustment
+  - Mute/unmute options
+
+### Error Handling
+
+- Gracefully handle and display user-friendly messages for:
+  - Microphone permission denials
+  - Connection failures
+  - API errors
+  - Timeouts
+
+### Audio Visualization
+
+- Implement visualization using Canvas or SVG
+- Update visualizations in an efficient manner (requestAnimationFrame)
+- Consider performance implications of high-frequency updates
+
+## Usage Example
+
+Intended implementation in a page:
+
+```tsx
+import VoiceAgent from '@/components/VoiceAgent';
+
+export default function ConversationPage() {
+  return (
+    <main className="min-h-screen p-8">
+      <h1 className="text-2xl font-bold mb-6">ElevenLabs Voice Agent</h1>
+      <VoiceAgent />
+    </main>
+  );
+}
+```

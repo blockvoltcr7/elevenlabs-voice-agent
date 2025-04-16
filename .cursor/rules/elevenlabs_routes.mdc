@@ -1,0 +1,83 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# ElevenLabs API Routes Rules
+
+Description: Guidelines for implementing secure API routes for ElevenLabs integration
+Globs: app/api/elevenlabs/**/*.ts
+
+## Purpose
+
+These API routes serve as a secure bridge between the client application and the ElevenLabs API, ensuring that sensitive information like API keys are never exposed to the client.
+
+## Security Requirements
+
+- Never expose the ElevenLabs API key in client-side code
+- Implement proper error handling to prevent information leakage
+- Consider adding rate limiting for production environments
+- Validate all client requests before forwarding to ElevenLabs
+
+## Implementation Pattern
+
+For generating signed URLs:
+
+```typescript
+import { NextResponse } from 'next/server';
+
+export async function GET(request) {
+  try {
+    // Optional: Add authentication check here
+
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${process.env.AGENT_ID}`,
+      {
+        method: 'GET',
+        headers: {
+          'xi-api-key': process.env.XI_API_KEY,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('ElevenLabs API error:', errorData);
+      return NextResponse.json(
+        { error: 'Failed to get signed URL' },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json({ signedUrl: data.signed_url });
+  } catch (error) {
+    console.error('Server error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## Environment Variables
+
+Required environment variables:
+- `XI_API_KEY`: Your ElevenLabs API key
+- `AGENT_ID`: The ID of your ElevenLabs agent
+
+These should be stored in `.env.local` for development and configured in your hosting platform for production.
+
+## Error Handling
+
+- Implement proper error handling for all API requests
+- Return appropriate HTTP status codes
+- Provide meaningful error messages for client-side handling
+- Log detailed errors server-side but return sanitized messages to clients
+
+## Performance Considerations
+
+- Consider caching signed URLs if they have a reasonable expiration time
+- Implement request timeouts to prevent hanging connections
+- Monitor API rate limits to avoid service disruptions

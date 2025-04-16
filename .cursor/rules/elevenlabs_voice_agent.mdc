@@ -1,0 +1,98 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# ElevenLabs Voice Agent Project Rules
+
+Description: Guidelines for developing a Next.js application with ElevenLabs Conversational AI
+Globs: **/*.tsx **/*.ts **/*.js **/*.jsx
+
+## Project Overview
+
+This project creates a voice-based conversational AI interface using ElevenLabs' client library within a Next.js framework. The application allows users to interact with AI agents through voice, handling both input (microphone) and output (speech) in real-time.
+
+## Key Technologies
+
+- Next.js 15.3+ with App Router
+- TypeScript
+- ElevenLabs Conversational AI (@11labs/client)
+- Tailwind CSS for styling
+- WebSocket for real-time communication
+- Web Audio API for audio processing
+
+## Architecture Guidelines
+
+### Core Components
+
+- **VoiceAgent Component**: Client-side component handling the conversation lifecycle, audio visualization, and UI controls
+- **API Routes**: Server endpoints for handling authentication and signed URL generation
+- **Utility Functions**: Audio processing and state management helpers
+- **Environment Variables**: Secure storage of API keys and agent IDs
+
+### File Organization
+
+- `/app`: Main application code using Next.js App Router
+  - `/components`: Reusable UI components
+  - `/api`: Server-side API routes
+  - `/utils`: Helper utilities
+  - `/hooks`: Custom React hooks
+
+### Coding Standards
+
+- Prefer functional components with hooks over class components
+- Use TypeScript interfaces for all props and state
+- Handle all audio permissions explicitly and gracefully
+- Implement proper error boundaries for audio processing failures
+- Use React's useEffect cleanup functions to prevent memory leaks
+- Implement responsive design for all components
+
+## State Management
+
+- Use React context for global state when needed
+- Prefer local component state for UI-specific state
+- Handle WebSocket connection state with clear status indicators
+
+## Audio Processing Requirements
+
+- Request microphone permissions before initializing conversation
+- Provide visual feedback of audio input/output levels
+- Handle volume adjustments through the ElevenLabs client API
+- Implement graceful reconnection if connection is lost
+
+## Error Handling
+
+- Provide clear user feedback for:
+  - Microphone permission denials
+  - Connection failures
+  - API errors
+  - Audio processing issues
+- Log errors for debugging but protect sensitive information
+
+## Security Considerations
+
+- Never expose API keys in client-side code
+- Implement proper authentication for private agents
+- Use server-side API routes to generate signed URLs
+- Follow Next.js best practices for environment variable handling
+
+## Performance Guidelines
+
+- Minimize unnecessary re-renders in audio visualization components
+- Optimize WebSocket data handling
+- Consider using Web Workers for intensive audio processing
+- Implement lazy loading for non-critical components
+
+## Testing Approach
+
+- Write unit tests for utility functions
+- Create integration tests for the conversation flow
+- Test audio processing with mock audio streams
+- Verify error handling paths
+
+## Documentation Standards
+
+- Include JSDoc comments for all functions and components
+- Document props with TypeScript interfaces
+- Add usage examples in component documentation
+- Document environment variables requirements
